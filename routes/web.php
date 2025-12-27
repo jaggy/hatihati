@@ -11,7 +11,12 @@ Route::get(
 )->middleware('auth');
 
 Route::get('/signin/angello', function () {
-    auth()->login(\App\Models\User::first());
+    auth()->login(\App\Models\User::find(1));
+    return redirect('home');
+});
+
+Route::get('/signin/mich', function () {
+    auth()->login(\App\Models\User::find(2));
     return redirect('home');
 });
 
@@ -26,9 +31,7 @@ Route::post('/groups', function () {
     ]);
 
     //dd($group->id);
-    $attributes = User::find(1);
-
-    $attributes->groups()->attach($group->id);
+    Auth::user()->groups()->attach($group->id);
 
     return redirect('/home');
 });
