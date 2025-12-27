@@ -1,13 +1,17 @@
 <?php
 
+use App\Models\Group;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::get(
     '/home',
     function () {
-    return view('home');
-}
+
+        $groups = Group::whereAttachedTo(Auth::user())->get();
+
+        return view('home', ['groups' => $groups]);
+    }
 )->middleware('auth');
 
 Route::get('/signin/angello', function () {
@@ -27,7 +31,7 @@ Route::post('/groups', function () {
     ]);
 
     $group = \App\Models\Group::create([
-    'name' => request('name'),
+        'name' => request('name'),
     ]);
 
     //dd($group->id);
