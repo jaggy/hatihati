@@ -21,9 +21,16 @@ Route::post('/groups', function () {
         'name' => 'required',
     ]);
 
-    \App\Models\Group::create([
+    $group = \App\Models\Group::create([
     'name' => request('name'),
     ]);
+
+    //dd($group->id);
+    $attributes = User::find(1);
+
+    $attributes->groups()->attach($group->id);
+
+    return redirect('/home');
 });
 
 Route::get('/groups/create', function () {

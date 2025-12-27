@@ -1,2 +1,8 @@
+hello world
 <h1>hatihati</h1>
-<a href="/group/create">Add a new group</a>
+<a href="/groups/create">Add a new group</a>
+
+<div>
+    list groups here
+    need pivot table
+</div>
