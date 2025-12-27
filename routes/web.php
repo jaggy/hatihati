@@ -16,6 +16,11 @@ Route::get('/signin/angello', function () {
 });
 
 Route::post('/groups', function () {
+
+    request()->validate([
+        'name' => 'required',
+    ]);
+
     \App\Models\Group::create([
     'name' => request('name'),
     ]);
