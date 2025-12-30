@@ -44,9 +44,11 @@ Route::get('/groups/create', function () {
     return view('groups.create');
 });
 
-Route::get('/group/{id}', function (string $id) {
+Route::get('/group/{id}', function (string $groupId) {
 
-    return view('groups.show');
+    $group = Group::whereAttachedTo(Auth::user())->find($groupId);
+
+    return view('groups.show', ['group'=>$group]);
 });
 
 Route::get('/', function () {

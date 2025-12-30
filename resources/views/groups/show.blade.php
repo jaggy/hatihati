@@ -1,1 +1,3 @@
 Hello
+
+{{$group->name}}
