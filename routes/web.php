@@ -44,6 +44,11 @@ Route::get('/groups/create', function () {
     return view('groups.create');
 });
 
+Route::get('/group/{id}', function (string $id) {
+
+    return view('groups.show');
+});
+
 Route::get('/', function () {
     return view('welcome');
 });
