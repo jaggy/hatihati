@@ -51,6 +51,17 @@ Route::get('/group/{id}', function (string $groupId) {
     return view('groups.show', ['group'=>$group]);
 });
 
+Route::post('/expenses', function(){
+
+    $expense = \App\Models\Expense::create([
+       'description' => request('description'),
+       'amount' => request('amount')
+    ]);
+
+    dd($expense);
+    return redirect()->back();
+});
+
 Route::get('/', function () {
     return view('welcome');
 });
