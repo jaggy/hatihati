@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\GroupsController;
 use App\Models\Group;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/signin/angello', function () {
@@ -36,8 +37,28 @@ Route::get('/groups/{group}', function (Group $group) {
         abort(404);
     }
 
-    return view('groups.show', ['group' => $group]);
+    return view('groups.show', [
+        'group' => $group,
+        'users' => $group->users()->get(),
+    ]);
 })->name('groups.show');
+
+Route::post('/groups/{group}/people', function (Group $group) {
+    // if user exists in hatihati, add to group
+    if (User::where('email', request('email'))->exists()) {
+        $user = User::where('email', request('email'))->first();
+
+        $group->users()->syncWithoutDetaching($user);
+
+        return redirect()->back();
+    }
+
+    dd('not exists');
+
+    // if not user exists, create their account without a password, send them an invite
+
+    // redirect to group
+});
 
 Route::post('/expenses', function () {
 
