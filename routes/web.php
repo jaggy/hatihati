@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\Group;
-use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::get(
@@ -16,11 +15,13 @@ Route::get(
 
 Route::get('/signin/angello', function () {
     auth()->login(\App\Models\User::find(1));
+
     return redirect('home');
 });
 
 Route::get('/signin/mich', function () {
     auth()->login(\App\Models\User::find(2));
+
     return redirect('home');
 });
 
@@ -34,7 +35,7 @@ Route::post('/groups', function () {
         'name' => request('name'),
     ]);
 
-    //dd($group->id);
+    // dd($group->id);
     Auth::user()->groups()->attach($group->id);
 
     return redirect('/home');
@@ -44,21 +45,23 @@ Route::get('/groups/create', function () {
     return view('groups.create');
 });
 
-Route::get('/group/{id}', function (string $groupId) {
+Route::get('/groups/{group}', function (Group $group) {
+    if ($group->users->doesntContain(Auth::user())) {
+        abort(404);
+    }
 
-    $group = Group::whereAttachedTo(Auth::user())->find($groupId);
-
-    return view('groups.show', ['group'=>$group]);
+    return view('groups.show', ['group' => $group]);
 });
 
-Route::post('/expenses', function(){
+Route::post('/expenses', function () {
 
     $expense = \App\Models\Expense::create([
-       'description' => request('description'),
-       'amount' => request('amount')
+        'description' => request('description'),
+        'amount' => request('amount'),
     ]);
 
     dd($expense);
+
     return redirect()->back();
 });
 
