@@ -53,11 +53,19 @@ Route::post('/groups/{group}/people', function (Group $group) {
         return redirect()->back();
     }
 
-    dd('not exists');
+    // if not user exists
+    // create their account without a password and name
+    // add them to the group
+    // send them an invite
+    if (User::where('email', request('email'))->doesntExist()) {
+        $user = User::create([
+            'email' => request('email'),
+        ]);
 
-    // if not user exists, create their account without a password, send them an invite
+        $user->groups()->syncWithoutDetaching($group);
 
-    // redirect to group
+        dd('doesn exist');
+    }
 });
 
 Route::post('/expenses', function () {
