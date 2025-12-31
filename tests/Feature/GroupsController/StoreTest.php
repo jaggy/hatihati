@@ -9,11 +9,13 @@ use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseCount;
 use function Pest\Laravel\assertDatabaseHas;
 
+beforeEach(function () {
+    $this->user = User::factory()->create();
+
+    actingAs($this->user);
+});
+
 it('creates a group', function () {
-    $user = User::factory()->create();
-
-    actingAs($user);
-
     assertDatabaseCount('groups', 0);
     assertDatabaseCount('group_user', 0);
 
@@ -29,16 +31,12 @@ it('creates a group', function () {
     ]);
 
     assertDatabaseHas('group_user', [
-        'user_id' => $user->id,
+        'user_id' => $this->user->id,
         'group_id' => Group::first()->id,
     ]);
 });
 
 it('validates the data', function ($attribute, $value, $message) {
-    $user = User::factory()->create();
-
-    actingAs($user);
-
     createGroup([
         $attribute => $value,
     ])->assertInvalid([
