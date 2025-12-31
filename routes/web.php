@@ -37,7 +37,7 @@ Route::get('/groups/{group}', function (Group $group) {
     }
 
     return view('groups.show', ['group' => $group]);
-});
+})->name('groups.show');
 
 Route::post('/expenses', function () {
 
