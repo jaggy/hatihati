@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\GroupsController;
 use App\Models\Group;
 use Illuminate\Support\Facades\Route;
 
@@ -25,20 +26,8 @@ Route::get('/signin/mich', function () {
     return redirect('home');
 });
 
-Route::post('/groups', function () {
-
-    request()->validate([
-        'name' => 'required',
-    ]);
-
-    $group = \App\Models\Group::create([
-        'name' => request('name'),
-    ]);
-
-    // dd($group->id);
-    Auth::user()->groups()->attach($group->id);
-
-    return redirect('/home');
+Route::middleware('auth')->group(function () {
+    Route::post('groups', [GroupsController::class, 'store'])->name('groups.store');
 });
 
 Route::get('/groups/create', function () {

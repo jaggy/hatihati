@@ -19,7 +19,7 @@ it('creates a group', function () {
 
     createGroup([
         'name' => 'Discord Peeps',
-    ]);
+    ])->assertRedirect('/home');
 
     assertDatabaseCount('groups', 1);
     assertDatabaseCount('group_user', 1);
