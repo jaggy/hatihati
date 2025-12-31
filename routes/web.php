@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\GroupsController;
+use App\Mail\Invite;
 use App\Models\Group;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -63,6 +64,8 @@ Route::post('/groups/{group}/people', function (Group $group) {
         ]);
 
         $user->groups()->syncWithoutDetaching($group);
+
+        Mail::to($user)->send(new Invite);
 
         dd('doesn exist');
     }
