@@ -45,6 +45,10 @@ Route::get('/groups/{group}', function (Group $group) {
 })->name('groups.show');
 
 Route::post('/groups/{group}/people', function (Group $group) {
+    if ($group->users->doesntContain(Auth::user())) {
+        abort(403);
+    }
+
     $user = User::where('email', request('email'))->first();
 
     if (! $user) {

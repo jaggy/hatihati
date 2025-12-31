@@ -2,8 +2,10 @@
 
 namespace Tests\Feature\GroupUsersController;
 
+use App\Mail\Invite;
 use App\Models\Group;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseCount;
@@ -14,6 +16,7 @@ beforeEach(function () {
 
     actingAs($this->user);
 
+    Mail::fake();
 });
 
 it('add an existing user to a group', function () {
@@ -53,6 +56,10 @@ it('add a new user to a group', function () {
         'email' => 'mich@bayadbayad.com',
     ]);
 
+    Mail::assertSent(function (Invite $invite) {
+        return $invite->hasTo('mich@bayadbayad.com');
+    });
+
     assertDatabaseCount('group_user', 2);
     assertDatabaseCount('users', 2);
 
@@ -61,6 +68,18 @@ it('add a new user to a group', function () {
         'email' => 'mich@bayadbayad.com',
         'password' => null,
     ]);
+});
+
+it('doesnt allow outside users to invite to the group', function () {
+    $group = Group::factory()->create();
+
+    assertDatabaseCount('group_user', 0);
+
+    addPersonToGroup($group, [
+        'email' => 'mich@bayadbayad.com',
+    ]);
+
+    assertDatabaseCount('group_user', 0);
 });
 
 function addPersonToGroup(Group $group, $attributes = [])
