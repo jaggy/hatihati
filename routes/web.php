@@ -4,16 +4,6 @@ use App\Http\Controllers\GroupsController;
 use App\Models\Group;
 use Illuminate\Support\Facades\Route;
 
-Route::get(
-    '/home',
-    function () {
-
-        $groups = Group::whereAttachedTo(Auth::user())->get();
-
-        return view('home', ['groups' => $groups]);
-    }
-)->middleware('auth');
-
 Route::get('/signin/angello', function () {
     auth()->login(\App\Models\User::find(1));
 
@@ -27,6 +17,13 @@ Route::get('/signin/mich', function () {
 });
 
 Route::middleware('auth')->group(function () {
+    Route::get('/home', function () {
+
+        $groups = Group::whereAttachedTo(Auth::user())->get();
+
+        return view('home', ['groups' => $groups]);
+    });
+
     Route::post('groups', [GroupsController::class, 'store'])->name('groups.store');
 });
 
