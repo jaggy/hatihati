@@ -45,30 +45,19 @@ Route::get('/groups/{group}', function (Group $group) {
 })->name('groups.show');
 
 Route::post('/groups/{group}/people', function (Group $group) {
-    // if user exists in hatihati, add to group
-    if (User::where('email', request('email'))->exists()) {
-        $user = User::where('email', request('email'))->first();
+    $user = User::where('email', request('email'))->first();
 
-        $group->users()->syncWithoutDetaching($user);
-
-        return redirect()->back();
-    }
-
-    // if not user exists
-    // create their account without a password and name
-    // add them to the group
-    // send them an invite
-    if (User::where('email', request('email'))->doesntExist()) {
+    if (! $user) {
         $user = User::create([
             'email' => request('email'),
         ]);
 
-        $user->groups()->syncWithoutDetaching($group);
-
         Mail::to($user)->send(new Invite);
-
-        dd('doesn exist');
     }
+
+    $group->users()->syncWithoutDetaching($user);
+
+    return redirect()->back();
 });
 
 Route::post('/expenses', function () {
